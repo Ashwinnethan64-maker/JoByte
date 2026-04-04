@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>JoByte — Precision Job Listings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#1c1b1b",
+                        "tertiary": "#555c6a",
+                        "secondary-container": "#e5e2e1",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#151c27",
+                        "tertiary-container": "#6e7583",
+                        "on-surface": "#191c1d",
+                        "surface-container": "#edeeef",
+                        "primary-container": "#db322f",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#ffb4ac",
+                        "on-tertiary-container": "#fefcff",
+                        "outline-variant": "#e4beb9",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#c0c7d6",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#656464",
+                        "tertiary-fixed": "#dce2f3",
+                        "on-surface-variant": "#5b403d",
+                        "surface": "#f8f9fa",
+                        "surface-container-low": "#f3f4f5",
+                        "on-primary-container": "#fffbff",
+                        "on-background": "#191c1d",
+                        "inverse-surface": "#2e3132",
+                        "surface-variant": "#e1e3e4",
+                        "inverse-primary": "#ffb4ac",
+                        "surface-tint": "#bb171c",
+                        "on-secondary-fixed-variant": "#474646",
+                        "surface-dim": "#d9dadb",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "inverse-on-surface": "#f0f1f2",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#ffdad6",
+                        "on-primary-fixed": "#410002",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-error": "#ffffff",
+                        "secondary": "#5f5e5e",
+                        "on-tertiary-fixed-variant": "#404754",
+                        "primary": "#b7131a",
+                        "secondary-fixed-dim": "#c9c6c5",
+                        "on-primary-fixed-variant": "#93000d",
+                        "background": "#f8f9fa",
+                        "secondary-fixed": "#e5e2e1",
+                        "outline": "#906f6c",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .dot-grid {
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #b7131a;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-fixed">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md shadow-[0_12px_40px_rgba(13,13,13,0.04)]">
+<div class="flex justify-between items-center px-8 h-16 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-2 text-xl font-bold tracking-tight text-[#191c1d] dark:text-white">
+<span class="text-primary material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<span>JoByte</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#b7131a] font-semibold border-b-2 border-[#b7131a] pb-1 font-['Inter'] text-[15px] leading-[1.6]" href="#">Jobs</a>
+<a class="text-neutral-600 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px] leading-[1.6]" href="#">Companies</a>
+<a class="text-neutral-600 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px] leading-[1.6]" href="#">Assessments</a>
+<a class="text-neutral-600 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px] leading-[1.6]" href="#">About</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-neutral-600 dark:text-neutral-400 font-medium hover:opacity-80 transition-all">Sign In</button>
+<button class="bg-primary text-white px-6 py-2 rounded-lg font-semibold hover:opacity-80 transition-all active:scale-[0.98]">Get Started</button>
+</div>
+</div>
+</nav>
+<main class="pt-16 min-h-screen flex dot-grid">
+<!-- Sidebar Filters -->
+<aside class="w-[260px] h-[calc(100vh-64px)] fixed left-0 overflow-y-auto bg-white p-6 border-r border-neutral-100 hidden lg:block">
+<div class="space-y-8">
+<!-- Search -->
+<div class="space-y-2">
+<label class="text-[12px] font-bold uppercase tracking-wider text-secondary">Search keywords</label>
+<div class="relative group">
+<input class="w-full bg-surface border-none border-b-2 border-outline-variant/15 focus:border-primary focus:ring-0 transition-all text-sm py-2 px-0" placeholder="Design, Engineering..." type="text"/>
+</div>
+</div>
+<!-- Categories -->
+<div class="space-y-3">
+<h4 class="text-[12px] font-bold uppercase tracking-wider text-secondary">Category</h4>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded-sm border-neutral-300 text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Engineering</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded-sm border-neutral-300 text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Product Design</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded-sm border-neutral-300 text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Marketing</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded-sm border-neutral-300 text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Operations</span>
+</label>
+</div>
+</div>
+<!-- Job Type -->
+<div class="space-y-3">
+<h4 class="text-[12px] font-bold uppercase tracking-wider text-secondary">Job Type</h4>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1 rounded-full text-xs font-semibold bg-primary text-white">Full-time</button>
+<button class="px-3 py-1 rounded-full text-xs font-semibold bg-surface-variant/30 text-secondary border border-transparent hover:border-primary transition-all">Contract</button>
+<button class="px-3 py-1 rounded-full text-xs font-semibold bg-surface-variant/30 text-secondary border border-transparent hover:border-primary transition-all">Remote</button>
+</div>
+</div>
+<!-- Salary Slider -->
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<h4 class="text-[12px] font-bold uppercase tracking-wider text-secondary">Salary Range</h4>
+<span class="text-xs font-bold text-primary">$80k - $150k</span>
+</div>
+<input class="w-full h-1 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-primary custom-slider" type="range"/>
+</div>
+<!-- Location -->
+<div class="space-y-2">
+<label class="text-[12px] font-bold uppercase tracking-wider text-secondary">Location</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-neutral-400 text-lg">location_on</span>
+<input class="w-full bg-transparent border-none border-b-2 border-outline-variant/15 focus:border-primary focus:ring-0 text-sm py-2 pl-6" placeholder="San Francisco, CA" type="text"/>
+</div>
+</div>
+<button class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20">
+                    Apply Filters
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<section class="flex-1 lg:ml-[260px] p-8 max-w-[1100px]">
+<div class="flex justify-between items-end mb-10">
+<div>
+<h1 class="text-[32px] font-semibold tracking-tight text-on-surface">Available Opportunities</h1>
+<p class="text-secondary mt-1">Showing 142 precision-matched roles for you.</p>
+</div>
+<div class="flex items-center gap-2 text-sm font-semibold text-secondary">
+<span>Sort by:</span>
+<button class="flex items-center gap-1 text-on-surface">Newest First <span class="material-symbols-outlined">expand_more</span></button>
+</div>
+</div>
+<!-- Job Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-8">
+<!-- Job Card 1 (Featured) -->
+<div class="group relative bg-white rounded-lg border border-neutral-100 p-6 transition-all hover:border-t-[3px] hover:border-t-primary shadow-[0_12px_40px_rgba(13,13,13,0.04)]">
+<div class="absolute top-4 right-4 px-2 py-1 bg-[#fff8e1] text-[#b45309] text-[10px] font-bold rounded uppercase tracking-tighter flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">star</span> Featured
+                    </div>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center text-primary font-bold text-lg">
+                            G
+                        </div>
+<div>
+<p class="text-sm font-medium text-secondary">Global Solutions</p>
+<p class="text-xs text-neutral-400">Palo Alto, CA</p>
+</div>
+</div>
+<h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Senior Product Engineer</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-1 rounded bg-[#e8f5e9] text-[#2e7d32] text-[10px] font-bold uppercase">$140k - $180k</span>
+<span class="px-2 py-1 rounded bg-surface-container-low text-secondary text-[10px] font-bold uppercase">Full-time</span>
+<span class="px-2 py-1 rounded bg-surface-container-low text-secondary text-[10px] font-bold uppercase">Hybrid</span>
+</div>
+<div class="flex gap-2 mb-6">
+<span class="px-3 py-1 rounded bg-[#FFF1F0] text-primary text-xs font-semibold">React</span>
+<span class="px-3 py-1 rounded bg-[#FFF1F0] text-primary text-xs font-semibold">Node.js</span>
+<span class="px-3 py-1 rounded bg-[#FFF1F0] text-primary text-xs font-semibold">AWS</span>
+</div>
+<div class="flex items-center justify-between pt-6 border-t border-neutral-50">
+<span class="text-xs text-neutral-400 italic">Posted 3 days ago</span>
+<div class="flex gap-3">
+<button class="px-4 py-2 text-xs font-bold text-secondary border border-outline-variant/20 rounded hover:bg-neutral-50 transition-colors">Know More</button>
+<button class="px-4 py-2 text-xs font-bold text-white bg-primary rounded hover:opacity-90 transition-opacity">Apply Now</button>
+</div>
+</div>
+</div>
+<!-- Job Card 2 (Standard) -->
+<div class="group relative bg-white rounded-lg border border-neutral-100 p-6 transition-all hover:border-t-[3px] hover:border-t-primary shadow-[0_12px_40px_rgba(13,13,13,0.04)]">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full bg-tertiary-container/10 flex items-center justify-center text-tertiary font-bold text-lg">
+                            N
+                        </div>
+<div>
+<p class="text-sm font-medium text-secondary">Neural Labs</p>
+<p class="text-xs text-neutral-400">Remote</p>
+</div>
+</div>
+<h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">ML Research Scientist</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-1 rounded bg-[#e8f5e9] text-[#2e7d32] text-[10px] font-bold uppercase">$160k - $220k</span>
+<span class="px-2 py-1 rounded bg-surface-container-low text-secondary text-[10px] font-bold uppercase">Full-time</span>
+<span class="px-2 py-1 rounded bg-surface-container-low text-secondary text-[10px] font-bold uppercase">Remote</span>
+</div>
+<div class="flex gap-2 mb-6">
+<span class="px-3 py-1 rounded bg-[#FFF1F0] text-primary text-xs font-semibold">Python</span>
+<span class="px-3 py-1 rounded bg-[#FFF1F0] text-primary text-xs font-semibold">PyTorch</span>
+<span class="px-3 py-1 rounded bg-[#FFF1F0] text-primary text-xs font-semibold">NLP</span>
+</div>
+<div class="flex items-center justify-between pt-6 border-t border-neutral-50">
+<span class="text-xs text-neutral-400 italic">Posted 1 day ago</span>
+<div class="flex gap-3">
+<button class="px-4 py-2 text-xs font-bold text-secondary border border-outline-variant/20 rounded hover:bg-neutral-50 transition-colors">Know More</button>
+<button class="px-4 py-2 text-xs font-bold text-white bg-primary rounded hover:opacity-90 transition-opacity">Apply Now</button>
+</div>
+</div>
+</div>
+<!-- Job Card 3 (Locked/Paywall) -->
+<div class="group relative bg-white rounded-lg border border-neutral-100 p-6 transition-all hover:border-t-[3px] hover:border-t-primary shadow-[0_12px_40px_rgba(13,13,13,0.04)] overflow-hidden">
+<div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-10 flex items-center justify-center">
+<div class="bg-white p-6 rounded-xl shadow-2xl border border-neutral-100 text-center max-w-[280px] scale-100 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-primary text-4xl mb-2" style="font-variation-settings: 'FILL' 1;">lock</span>
+<h4 class="font-bold text-on-surface mb-2">Unlock Full Details</h4>
+<p class="text-xs text-secondary mb-4">Complete our standardized technical assessment to view premium compensation and perks.</p>
+<button class="w-full bg-primary text-white py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-2">
+                                Take SEB Assessment <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="opacity-30">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full bg-neutral-200"></div>
+<div class="h-4 w-24 bg-neutral-100 rounded"></div>
+</div>
+<div class="h-6 w-48 bg-neutral-100 rounded mb-4"></div>
+<div class="flex gap-2 mb-6">
+<div class="h-6 w-16 bg-neutral-100 rounded"></div>
+<div class="h-6 w-16 bg-neutral-100 rounded"></div>
+</div>
+</div>
+</div>
+<!-- Job Card 4 -->
+<div class="group relative bg-white rounded-lg border border-neutral-100 p-6 transition-all hover:border-t-[3px] hover:border-t-primary shadow-[0_12px_40px_rgba(13,13,13,0.04)]">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary font-bold text-lg">
+                            M
+                        </div>
+<div>
+<p class="text-sm font-medium text-secondary">Matrix Data</p>
+<p class="text-xs text-neutral-400">New York, NY</p>
+</div>
+</div>
+<h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">Lead Data Architect</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-1 rounded bg-[#e8f5e9] text-[#2e7d32] text-[10px] font-bold uppercase">$190k - $240k</span>
+<span class="px-2 py-1 rounded bg-surface-container-low text-secondary text-[10px] font-bold uppercase">Contract</span>
+<span class="px-2 py-1 rounded bg-surface-container-low text-secondary text-[10px] font-bold uppercase">On-site</span>
+</div>
+<div class="flex gap-2 mb-6">
+<span class="px-3 py-1 rounded bg-[#FFF1F0] text-primary text-xs font-semibold">Snowflake</span>
+<span class="px-3 py-1 rounded bg-[#FFF1F0] text-primary text-xs font-semibold">SQL</span>
+<span class="px-3 py-1 rounded bg-[#FFF1F0] text-primary text-xs font-semibold">Kafka</span>
+</div>
+<div class="flex items-center justify-between pt-6 border-t border-neutral-50">
+<span class="text-xs text-neutral-400 italic">Posted 5 days ago</span>
+<div class="flex gap-3">
+<button class="px-4 py-2 text-xs font-bold text-secondary border border-outline-variant/20 rounded hover:bg-neutral-50 transition-colors">Know More</button>
+<button class="px-4 py-2 text-xs font-bold text-white bg-primary rounded hover:opacity-90 transition-opacity">Apply Now</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Pagination Mockup -->
+<div class="mt-12 flex justify-center items-center gap-4">
+<button class="p-2 rounded-lg border border-neutral-100 text-secondary hover:bg-white transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-lg bg-primary text-white font-bold">1</button>
+<button class="w-10 h-10 rounded-lg bg-white border border-neutral-100 text-on-surface font-medium hover:border-primary transition-colors">2</button>
+<button class="w-10 h-10 rounded-lg bg-white border border-neutral-100 text-on-surface font-medium hover:border-primary transition-colors">3</button>
+</div>
+<button class="p-2 rounded-lg border border-neutral-100 text-secondary hover:bg-white transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-neutral-100 bg-white dark:bg-neutral-900 mt-20">
+<div class="grid grid-cols-4 gap-8 px-12 py-16 max-w-[1440px] mx-auto">
+<div class="col-span-1">
+<div class="text-lg font-bold text-[#b7131a] mb-4">JoByte</div>
+<p class="text-[15px] text-neutral-500 font-['Inter']">Precision engineering for your professional future. Connecting talent with destiny.</p>
+</div>
+<div>
+<h5 class="text-on-surface font-bold mb-4 uppercase text-xs tracking-widest">Product</h5>
+<ul class="space-y-2">
+<li><a class="text-neutral-500 hover:text-[#b7131a] transition-colors text-[15px]" href="#">Jobs Search</a></li>
+<li><a class="text-neutral-500 hover:text-[#b7131a] transition-colors text-[15px]" href="#">Assessments</a></li>
+<li><a class="text-neutral-500 hover:text-[#b7131a] transition-colors text-[15px]" href="#">Salary Tools</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-on-surface font-bold mb-4 uppercase text-xs tracking-widest">Company</h5>
+<ul class="space-y-2">
+<li><a class="text-neutral-500 hover:text-[#b7131a] transition-colors text-[15px]" href="#">About Us</a></li>
+<li><a class="text-neutral-500 hover:text-[#b7131a] transition-colors text-[15px]" href="#">Careers</a></li>
+<li><a class="text-neutral-500 hover:text-[#b7131a] transition-colors text-[15px]" href="#">Press</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-on-surface font-bold mb-4 uppercase text-xs tracking-widest">Support</h5>
+<ul class="space-y-2">
+<li><a class="text-neutral-500 hover:text-[#b7131a] transition-colors text-[15px]" href="#">Help Center</a></li>
+<li><a class="text-neutral-500 hover:text-[#b7131a] transition-colors text-[15px]" href="#">Privacy Policy</a></li>
+<li><a class="text-neutral-500 hover:text-[#b7131a] transition-colors text-[15px]" href="#">Security</a></li>
+</ul>
+</div>
+</div>
+<div class="px-12 py-8 border-t border-neutral-50 flex justify-between items-center max-w-[1440px] mx-auto">
+<span class="text-neutral-400 text-sm">© 2024 JoByte. Precision in Careers.</span>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-neutral-400 cursor-pointer hover:text-primary">public</span>
+<span class="material-symbols-outlined text-neutral-400 cursor-pointer hover:text-primary">mail</span>
+<span class="material-symbols-outlined text-neutral-400 cursor-pointer hover:text-primary">share</span>
+</div>
+</div>
+</footer>
+</body></html>

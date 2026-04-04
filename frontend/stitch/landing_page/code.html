@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#1c1b1b",
+                    "tertiary": "#555c6a",
+                    "secondary-container": "#e5e2e1",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#151c27",
+                    "tertiary-container": "#6e7583",
+                    "on-surface": "#191c1d",
+                    "surface-container": "#edeeef",
+                    "primary-container": "#db322f",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#ffb4ac",
+                    "on-tertiary-container": "#fefcff",
+                    "outline-variant": "#e4beb9",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#c0c7d6",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-container": "#656464",
+                    "tertiary-fixed": "#dce2f3",
+                    "on-surface-variant": "#5b403d",
+                    "surface": "#f8f9fa",
+                    "surface-container-low": "#f3f4f5",
+                    "on-primary-container": "#fffbff",
+                    "on-background": "#191c1d",
+                    "inverse-surface": "#2e3132",
+                    "surface-variant": "#e1e3e4",
+                    "inverse-primary": "#ffb4ac",
+                    "surface-tint": "#bb171c",
+                    "on-secondary-fixed-variant": "#474646",
+                    "surface-dim": "#d9dadb",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f8f9fa",
+                    "inverse-on-surface": "#f0f1f2",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#ffdad6",
+                    "on-primary-fixed": "#410002",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e7e8e9",
+                    "on-error": "#ffffff",
+                    "secondary": "#5f5e5e",
+                    "on-tertiary-fixed-variant": "#404754",
+                    "primary": "#b7131a",
+                    "secondary-fixed-dim": "#c9c6c5",
+                    "on-primary-fixed-variant": "#93000d",
+                    "background": "#f8f9fa",
+                    "secondary-fixed": "#e5e2e1",
+                    "outline": "#906f6c",
+                    "surface-container-highest": "#e1e3e4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .dot-grid {
+            background-color: #ffffff;
+            background-image: radial-gradient(circle, #d1d5db 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="text-on-surface selection:bg-primary selection:text-white">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md shadow-[0_12px_40px_rgba(13,13,13,0.04)]">
+<div class="flex justify-between items-center px-8 h-16 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-2 text-xl font-bold tracking-tight text-[#191c1d] dark:text-white">
+<span class="text-[#b7131a] material-symbols-outlined text-3xl" data-icon="work">work</span>
+<span>JoByte</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#b7131a] font-semibold border-b-2 border-[#b7131a] pb-1 font-['Inter'] text-[15px] leading-[1.6]" href="#">Jobs</a>
+<a class="text-neutral-600 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px] leading-[1.6]" href="#">Companies</a>
+<a class="text-neutral-600 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px] leading-[1.6]" href="#">Assessments</a>
+<a class="text-neutral-600 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px] leading-[1.6]" href="#">About</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-neutral-600 font-semibold px-4 py-2 hover:opacity-80 transition-all">Sign In</button>
+<button class="bg-[#b7131a] text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 active:scale-[0.98] transition-all">Get Started</button>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden dot-grid">
+<!-- Floating Icons -->
+<div class="absolute inset-0 pointer-events-none opacity-40">
+<span class="material-symbols-outlined absolute text-4xl text-neutral-400" data-icon="database" style="top: 20%; left: 15%;">database</span>
+<span class="material-symbols-outlined absolute text-5xl text-neutral-400" data-icon="code" style="top: 15%; right: 20%;">code</span>
+<span class="material-symbols-outlined absolute text-3xl text-neutral-400" data-icon="smartphone" style="bottom: 30%; left: 10%;">smartphone</span>
+<span class="material-symbols-outlined absolute text-4xl text-neutral-400" data-icon="settings" style="bottom: 20%; right: 15%;">settings</span>
+<span class="material-symbols-outlined absolute text-3xl text-neutral-400" data-icon="description" style="top: 60%; right: 5%;">description</span>
+<span class="material-symbols-outlined absolute text-4xl text-neutral-400" data-icon="lightbulb" style="top: 40%; left: 5%;">lightbulb</span>
+<span class="material-symbols-outlined absolute text-3xl text-neutral-400" data-icon="public" style="bottom: 10%; left: 45%;">public</span>
+</div>
+<div class="relative z-10 w-full max-w-[1440px] px-8 flex justify-center">
+<div class="bg-white border border-neutral-200 rounded-[16px] shadow-[0_12px_40px_rgba(13,13,13,0.06)] p-12 md:p-20 text-center max-w-4xl backdrop-blur-sm">
+<div class="flex justify-center mb-8">
+<div class="w-16 h-16 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-4xl" data-icon="rocket_launch">rocket_launch</span>
+</div>
+</div>
+<h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-on-surface mb-6 leading-tight">
+                    Find Your Next <span class="text-primary">Opportunity</span>
+</h1>
+<p class="text-lg md:text-xl text-neutral-600 leading-relaxed mb-10 max-w-2xl mx-auto">
+                    JoByte connects top talent with world-class companies through intelligent assessments and real-time tracking.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="flex items-center justify-center gap-3 px-8 py-4 border-2 border-neutral-200 rounded-lg font-bold text-on-surface hover:bg-neutral-50 transition-all active:scale-95">
+<img alt="Google Logo" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBytHpLV_w8GakejT6ysxOrJx9j06nPTeoqSap_zxWQc_34LYMOWtX6n0iBUEbphD7JZ-tx1YIwfx7v5q0mUloiETV-22GrBb40rU6a5NVtX_XBDPtqCaYc8kQMxtdDIrjHOaYIOUkEGhDhlv0rddZU-TGVwWKOMigUSe4D9YnnvtURsxvrFFC76WEx5rzHtBenpG_JV0TbYvWiCtftDhpkdquEB29MpwnjxLYwYngrW_4fN96fuXwcDgX9TSGpe3gTG4qFrxz5AeA"/>
+                        Continue with Google
+                    </button>
+<button class="flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white rounded-lg font-bold shadow-lg shadow-primary/20 hover:bg-primary-container transition-all active:scale-95">
+                        Explore Jobs
+                        <span class="material-symbols-outlined text-xl" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section class="bg-surface-container-low py-20 border-y border-neutral-100">
+<div class="max-w-[1440px] mx-auto px-8">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="text-center group">
+<div class="text-4xl font-extrabold text-primary mb-2 group-hover:scale-110 transition-transform">10K+</div>
+<div class="text-sm font-bold text-neutral-500 uppercase tracking-widest">Active Jobs</div>
+</div>
+<div class="text-center group">
+<div class="text-4xl font-extrabold text-primary mb-2 group-hover:scale-110 transition-transform">500+</div>
+<div class="text-sm font-bold text-neutral-500 uppercase tracking-widest">Companies</div>
+</div>
+<div class="text-center group">
+<div class="text-4xl font-extrabold text-primary mb-2 group-hover:scale-110 transition-transform">95%</div>
+<div class="text-sm font-bold text-neutral-500 uppercase tracking-widest">Match Rate</div>
+</div>
+<div class="text-center group">
+<div class="text-4xl font-extrabold text-primary mb-2 group-hover:scale-110 transition-transform">48hr</div>
+<div class="text-sm font-bold text-neutral-500 uppercase tracking-widest">Response</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Section -->
+<section class="py-32 bg-white">
+<div class="max-w-[1440px] mx-auto px-8">
+<div class="mb-20 max-w-2xl">
+<h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-4">Engineered for Career Velocity</h2>
+<p class="text-neutral-600 text-lg">We've removed the friction from traditional job hunting with architectural precision.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<div class="p-8 bg-white border border-neutral-200 rounded-lg hover:border-primary transition-all duration-300 group">
+<div class="w-12 h-12 flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-4xl" data-icon="psychology">psychology</span>
+</div>
+<h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-colors">Skill Assessments</h3>
+<p class="text-neutral-600 leading-relaxed">Prove your expertise with our rigorous, industry-vetted technical assessments designed for elite performance.</p>
+</div>
+<div class="p-8 bg-white border border-neutral-200 rounded-lg hover:border-primary transition-all duration-300 group">
+<div class="w-12 h-12 flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-4xl" data-icon="radar">radar</span>
+</div>
+<h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-colors">Real-time Tracking</h3>
+<p class="text-neutral-600 leading-relaxed">Never wonder about your application status again. Get instant updates as hiring managers review your profile.</p>
+</div>
+<div class="p-8 bg-white border border-neutral-200 rounded-lg hover:border-primary transition-all duration-300 group">
+<div class="w-12 h-12 flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-4xl" data-icon="handshake">handshake</span>
+</div>
+<h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-colors">Direct Connection</h3>
+<p class="text-neutral-600 leading-relaxed">Bypass the black hole. We establish direct pathways between verified talent and high-growth organizations.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="flex flex-col md:flex-row min-h-[600px]">
+<!-- For Applicants -->
+<div class="flex-1 bg-[#0D0D0D] text-white p-12 md:p-24 flex flex-col justify-center">
+<h2 class="text-4xl font-bold mb-12">For Applicants</h2>
+<div class="relative space-y-16">
+<div class="absolute left-6 top-8 bottom-8 border-l border-dashed border-primary/40 hidden md:block"></div>
+<div class="relative flex gap-8">
+<div class="w-12 h-12 shrink-0 bg-primary text-white rounded-full flex items-center justify-center font-bold z-10">1</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Build Profile</h4>
+<p class="text-neutral-400">Import your credentials and showcase your technical narrative.</p>
+</div>
+</div>
+<div class="relative flex gap-8">
+<div class="w-12 h-12 shrink-0 bg-primary text-white rounded-full flex items-center justify-center font-bold z-10">2</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Take Assessments</h4>
+<p class="text-neutral-400">Validate your skills through precision-engineered technical tasks.</p>
+</div>
+</div>
+<div class="relative flex gap-8">
+<div class="w-12 h-12 shrink-0 bg-primary text-white rounded-full flex items-center justify-center font-bold z-10">3</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Get Hired</h4>
+<p class="text-neutral-400">Receive offers from companies that value verifiable excellence.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- For Employers -->
+<div class="flex-1 bg-white text-on-surface p-12 md:p-24 flex flex-col justify-center border-l border-neutral-100">
+<h2 class="text-4xl font-bold mb-12">For Employers</h2>
+<div class="relative space-y-16">
+<div class="absolute left-6 top-8 bottom-8 border-l border-dashed border-primary/20 hidden md:block"></div>
+<div class="relative flex gap-8">
+<div class="w-12 h-12 shrink-0 border-2 border-primary text-primary rounded-full flex items-center justify-center font-bold z-10">1</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Post Positions</h4>
+<p class="text-neutral-500">Define your requirements with architectural detail.</p>
+</div>
+</div>
+<div class="relative flex gap-8">
+<div class="w-12 h-12 shrink-0 border-2 border-primary text-primary rounded-full flex items-center justify-center font-bold z-10">2</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Screen Talent</h4>
+<p class="text-neutral-500">Access pre-vetted candidates with verified skill metrics.</p>
+</div>
+</div>
+<div class="relative flex gap-8">
+<div class="w-12 h-12 shrink-0 border-2 border-primary text-primary rounded-full flex items-center justify-center font-bold z-10">3</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Scale Fast</h4>
+<p class="text-neutral-500">Reduce time-to-hire by 60% with intelligent matching.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials Section -->
+<section class="py-32 bg-surface-container-lowest">
+<div class="max-w-[1440px] mx-auto px-8">
+<h2 class="text-3xl font-bold text-center mb-20">Voices of the Network</h2>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Testimonial 1 -->
+<div class="p-10 bg-white border border-neutral-100 rounded-lg shadow-[0_12px_40px_rgba(13,13,13,0.03)] flex flex-col">
+<div class="flex gap-1 mb-6">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+</div>
+<p class="text-neutral-700 italic mb-8 leading-relaxed">"JoByte's assessment framework finally gave me a way to prove my worth without the resume fluff."</p>
+<div class="mt-auto flex items-center gap-4">
+<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">AS</div>
+<div>
+<div class="font-bold">Alex Simmons</div>
+<div class="text-xs text-neutral-400 uppercase font-bold tracking-wider">Frontend Engineer</div>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="p-10 bg-white border border-neutral-100 rounded-lg shadow-[0_12px_40px_rgba(13,13,13,0.03)] flex flex-col">
+<div class="flex gap-1 mb-6">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+</div>
+<p class="text-neutral-700 italic mb-8 leading-relaxed">"The real-time tracking is a game-changer. I knew exactly where I stood in the hiring pipeline every single day."</p>
+<div class="mt-auto flex items-center gap-4">
+<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">ML</div>
+<div>
+<div class="font-bold">Maria Lopez</div>
+<div class="text-xs text-neutral-400 uppercase font-bold tracking-wider">Product Designer</div>
+</div>
+</div>
+</div>
+<!-- Testimonial 3 -->
+<div class="p-10 bg-white border border-neutral-100 rounded-lg shadow-[0_12px_40px_rgba(13,13,13,0.03)] flex flex-col">
+<div class="flex gap-1 mb-6">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="star" data-weight="fill">star</span>
+</div>
+<p class="text-neutral-700 italic mb-8 leading-relaxed">"We reduced our screening time by nearly 70% using their pre-vetted candidate pools. Remarkable ROI."</p>
+<div class="mt-auto flex items-center gap-4">
+<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">TK</div>
+<div>
+<div class="font-bold">Tom Kendrick</div>
+<div class="text-xs text-neutral-400 uppercase font-bold tracking-wider">Head of Engineering</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Shell -->
+<footer class="w-full border-t border-neutral-100 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8 px-12 py-16 max-w-[1440px] mx-auto">
+<div class="col-span-2 md:col-span-1">
+<div class="text-lg font-bold text-[#b7131a] mb-6">JoByte</div>
+<p class="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">
+                    Precision-engineered career platform for the modern technical landscape. We build the bridges between ambition and execution.
+                </p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-neutral-400 cursor-pointer hover:text-primary transition-colors" data-icon="public">public</span>
+<span class="material-symbols-outlined text-neutral-400 cursor-pointer hover:text-primary transition-colors" data-icon="mail">mail</span>
+</div>
+</div>
+<div>
+<h4 class="font-bold mb-6 uppercase text-xs tracking-widest text-neutral-400">Product</h4>
+<ul class="space-y-4">
+<li><a class="text-neutral-500 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px]" href="#">Browse Jobs</a></li>
+<li><a class="text-neutral-500 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px]" href="#">Assessments</a></li>
+<li><a class="text-neutral-500 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px]" href="#">Salaries</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6 uppercase text-xs tracking-widest text-neutral-400">Company</h4>
+<ul class="space-y-4">
+<li><a class="text-neutral-500 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px]" href="#">About Us</a></li>
+<li><a class="text-neutral-500 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px]" href="#">Careers</a></li>
+<li><a class="text-neutral-500 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px]" href="#">Press</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6 uppercase text-xs tracking-widest text-neutral-400">Support</h4>
+<ul class="space-y-4">
+<li><a class="text-neutral-500 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px]" href="#">Help Center</a></li>
+<li><a class="text-neutral-500 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px]" href="#">Privacy Policy</a></li>
+<li><a class="text-neutral-500 dark:text-neutral-400 hover:text-[#b7131a] transition-colors font-['Inter'] text-[15px]" href="#">Terms of Service</a></li>
+</ul>
+</div>
+</div>
+<div class="px-12 py-8 border-t border-neutral-100 dark:border-neutral-800 text-center text-neutral-400 text-sm">
+            © 2024 JoByte. Precision in Careers.
+        </div>
+</footer>
+</body></html>

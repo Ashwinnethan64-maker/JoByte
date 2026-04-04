@@ -1,8 +1,8 @@
 export default function JobListings() {
   return (
-    <div className="flex flex-col lg:flex-row w-full min-h-[100vh]" style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
+    <div className="flex flex-col lg:flex-row w-full min-h-screen" style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
       {/* Sidebar Filters */}
-      <aside className="w-[260px] min-h-[100vh] lg:h-auto lg:sticky lg:top-16 lg:max-h-[calc(100vh-64px)] overflow-y-auto bg-white p-6 border-r border-neutral-100 hidden lg:block z-10 pt-8">
+      <aside className="w-[260px] sticky top-16 h-fit bg-white p-6 border-r border-neutral-100 hidden lg:block z-10 pt-8">
         <div className="space-y-8">
           {/* Search */}
           <div className="space-y-2">
@@ -81,7 +81,7 @@ export default function JobListings() {
       </aside>
 
       {/* Main Content Area */}
-      <section className="flex-1 p-8 pt-20 lg:pt-24 max-w-[1100px] mx-auto lg:mx-0 w-full overflow-y-auto">
+      <section className="flex-1 p-8 pt-20 lg:pt-24 max-w-[1100px] mx-auto lg:mx-0 w-full">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
           <div>
             <h1 className="text-[32px] font-semibold tracking-tight text-on-surface">Available Opportunities</h1>

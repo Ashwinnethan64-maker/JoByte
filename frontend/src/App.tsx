@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
-import ReactDOM from "react-dom/client";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -9,9 +8,58 @@ import {
   useParams,
 } from "react-router-dom";
 
+// ─── TYPES ────────────────────────────────────────────────────────────────────
+
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  experience: string;
+  skills: string[];
+  salary: string;
+  openings: number;
+  deadline: string;
+  matchScore: number;
+  posted: string;
+  description: string;
+  contact: string;
+}
+
+interface Application {
+  id: string;
+  company: string;
+  role: string;
+  type: string;
+  date: string;
+  status: "Pending" | "Verified" | "Rejected";
+}
+
+interface EmployerJob {
+  id: string;
+  title: string;
+  status: "Active" | "Closed";
+  openings: number;
+  applicants: number;
+  deadline: string;
+}
+
+type ApplicantStatus = "pending" | "shortlisted" | "rejected";
+
+interface Applicant {
+  id: string;
+  name: string;
+  skills: string[];
+  matchScore: number;
+  type: string;
+  proposal: string;
+  status: ApplicantStatus;
+}
+
 // ─── MOCK DATA ────────────────────────────────────────────────────────────────
 
-const JOBS = [
+const JOBS: Job[] = [
   {
     id: "j1",
     title: "Senior Frontend Engineer",
@@ -116,7 +164,7 @@ const JOBS = [
   },
 ];
 
-const APPLICATIONS = [
+const APPLICATIONS: Application[] = [
   {
     id: "a1",
     company: "Razorpay",
@@ -151,7 +199,7 @@ const APPLICATIONS = [
   },
 ];
 
-const EMPLOYER_JOBS = [
+const EMPLOYER_JOBS: EmployerJob[] = [
   {
     id: "ej1",
     title: "Senior React Developer",
@@ -178,7 +226,7 @@ const EMPLOYER_JOBS = [
   },
 ];
 
-const APPLICANTS = [
+const APPLICANTS: Applicant[] = [
   {
     id: "ap1",
     name: "Arjun Mehta",
@@ -223,8 +271,11 @@ const APPLICANTS = [
 
 // ─── SHARED COMPONENTS ────────────────────────────────────────────────────────
 
-function Navbar({ showLinks = true }) {
-  const navigate = useNavigate();
+interface NavbarProps {
+  showLinks?: boolean;
+}
+
+function Navbar({ showLinks = true }: NavbarProps): React.ReactElement {
   return (
     <nav className="bg-white border-b border-slate-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -257,7 +308,7 @@ function Navbar({ showLinks = true }) {
   );
 }
 
-function AppNav() {
+function AppNav(): React.ReactElement {
   return (
     <nav className="bg-white border-b border-slate-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -297,9 +348,20 @@ function AppNav() {
   );
 }
 
-function TagInput({ tags, setTags, placeholder = "Type and press Enter" }) {
-  const [input, setInput] = useState("");
-  const handleKey = (e) => {
+interface TagInputProps {
+  tags: string[];
+  setTags: (tags: string[]) => void;
+  placeholder?: string;
+}
+
+function TagInput({
+  tags,
+  setTags,
+  placeholder = "Type and press Enter",
+}: TagInputProps): React.ReactElement {
+  const [input, setInput] = useState<string>("");
+
+  const handleKey = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter" && input.trim()) {
       e.preventDefault();
       if (!tags.includes(input.trim())) {
@@ -308,6 +370,7 @@ function TagInput({ tags, setTags, placeholder = "Type and press Enter" }) {
       setInput("");
     }
   };
+
   return (
     <div className="border border-slate-200 rounded-lg p-2 flex flex-wrap gap-2 min-h-12 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 bg-white">
       {tags.map((tag) => (
@@ -327,7 +390,9 @@ function TagInput({ tags, setTags, placeholder = "Type and press Enter" }) {
       ))}
       <input
         value={input}
-        onChange={(e) => setInput(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setInput(e.target.value)
+        }
         onKeyDown={handleKey}
         placeholder={tags.length === 0 ? placeholder : ""}
         className="flex-1 min-w-32 outline-none text-sm text-slate-700 placeholder-slate-400 bg-transparent"
@@ -336,7 +401,11 @@ function TagInput({ tags, setTags, placeholder = "Type and press Enter" }) {
   );
 }
 
-function MatchBadge({ score }) {
+interface MatchBadgeProps {
+  score: number;
+}
+
+function MatchBadge({ score }: MatchBadgeProps): React.ReactElement {
   let bg = "bg-slate-100 text-slate-500";
   if (score >= 80) bg = "bg-green-100 text-green-700";
   else if (score >= 60) bg = "bg-blue-100 text-blue-700";
@@ -347,13 +416,21 @@ function MatchBadge({ score }) {
   );
 }
 
-function StatusBadge({ status }) {
-  const styles = {
+interface StatusBadgeProps {
+  status: Application["status"];
+}
+
+function StatusBadge({ status }: StatusBadgeProps): React.ReactElement {
+  const styles: Record<Application["status"], string> = {
     Pending: "bg-slate-100 text-slate-600",
     Verified: "bg-green-100 text-green-700",
     Rejected: "bg-red-100 text-red-600",
   };
-  const icons = { Pending: "○", Verified: "✓", Rejected: "✕" };
+  const icons: Record<Application["status"], string> = {
+    Pending: "○",
+    Verified: "✓",
+    Rejected: "✕",
+  };
   return (
     <span
       className={`inline-flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full ${styles[status]}`}
@@ -363,7 +440,12 @@ function StatusBadge({ status }) {
   );
 }
 
-function Label({ children, required }) {
+interface LabelProps {
+  children: React.ReactNode;
+  required?: boolean;
+}
+
+function Label({ children, required }: LabelProps): React.ReactElement {
   return (
     <label className="block text-sm font-medium text-slate-700 mb-1.5">
       {children}
@@ -372,7 +454,9 @@ function Label({ children, required }) {
   );
 }
 
-function Input({ className = "", ...props }) {
+type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
+
+function Input({ className = "", ...props }: InputProps): React.ReactElement {
   return (
     <input
       className={`w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition ${className}`}
@@ -381,7 +465,12 @@ function Input({ className = "", ...props }) {
   );
 }
 
-function Textarea({ className = "", ...props }) {
+type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+function Textarea({
+  className = "",
+  ...props
+}: TextareaProps): React.ReactElement {
   return (
     <textarea
       className={`w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none ${className}`}
@@ -390,7 +479,13 @@ function Textarea({ className = "", ...props }) {
   );
 }
 
-function Select({ className = "", children, ...props }) {
+type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement>;
+
+function Select({
+  className = "",
+  children,
+  ...props
+}: SelectProps): React.ReactElement {
   return (
     <select
       className={`w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white ${className}`}
@@ -401,11 +496,24 @@ function Select({ className = "", children, ...props }) {
   );
 }
 
-function Btn({ variant = "primary", className = "", children, ...props }) {
-  const base = "inline-flex items-center justify-center gap-2 font-medium text-sm rounded-lg px-4 py-2.5 transition-all cursor-pointer";
-  const variants = {
+type BtnVariant = "primary" | "secondary" | "success" | "danger" | "ghost";
+
+interface BtnProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: BtnVariant;
+}
+
+function Btn({
+  variant = "primary",
+  className = "",
+  children,
+  ...props
+}: BtnProps): React.ReactElement {
+  const base =
+    "inline-flex items-center justify-center gap-2 font-medium text-sm rounded-lg px-4 py-2.5 transition-all cursor-pointer";
+  const variants: Record<BtnVariant, string> = {
     primary: "bg-blue-600 text-white hover:bg-blue-700",
-    secondary: "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50",
+    secondary:
+      "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50",
     success: "bg-green-600 text-white hover:bg-green-700",
     danger: "bg-red-600 text-white hover:bg-red-700",
     ghost: "text-slate-600 hover:bg-slate-100",
@@ -419,7 +527,7 @@ function Btn({ variant = "primary", className = "", children, ...props }) {
 
 // ─── 1. LANDING PAGE ──────────────────────────────────────────────────────────
 
-function LandingPage() {
+function LandingPage(): React.ReactElement {
   const features = [
     {
       icon: "🤖",
@@ -439,7 +547,10 @@ function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-slate-50"
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+    >
       <Navbar />
       {/* Hero */}
       <section className="max-w-7xl mx-auto px-6 pt-24 pb-20 text-center">
@@ -473,14 +584,18 @@ function LandingPage() {
         </div>
         {/* Social proof */}
         <div className="mt-16 flex items-center justify-center gap-10 text-center">
-          {[["12,400+", "Active Jobs"], ["3.2L+", "Candidates"], ["98%", "Verified Listings"]].map(
-            ([num, label]) => (
-              <div key={label}>
-                <div className="text-2xl font-bold text-slate-900">{num}</div>
-                <div className="text-sm text-slate-500 mt-1">{label}</div>
-              </div>
-            )
-          )}
+          {(
+            [
+              ["12,400+", "Active Jobs"],
+              ["3.2L+", "Candidates"],
+              ["98%", "Verified Listings"],
+            ] as [string, string][]
+          ).map(([num, label]) => (
+            <div key={label}>
+              <div className="text-2xl font-bold text-slate-900">{num}</div>
+              <div className="text-sm text-slate-500 mt-1">{label}</div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -493,7 +608,9 @@ function LandingPage() {
               className="bg-white border border-slate-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="text-3xl mb-4">{f.icon}</div>
-              <h3 className="font-semibold text-slate-900 text-lg mb-2">{f.title}</h3>
+              <h3 className="font-semibold text-slate-900 text-lg mb-2">
+                {f.title}
+              </h3>
               <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
             </div>
           ))}
@@ -525,29 +642,49 @@ function LandingPage() {
 
 // ─── 2. AUTH PAGE ─────────────────────────────────────────────────────────────
 
-function AuthPage() {
-  const navigate = useNavigate();
-  const [mode, setMode] = useState("login");
-  const [role, setRole] = useState("candidate");
-  const [form, setForm] = useState({ email: "", password: "", name: "" });
+type AuthMode = "login" | "register";
+type UserRole = "candidate" | "employer";
 
-  const handleSubmit = (e) => {
+interface AuthForm {
+  email: string;
+  password: string;
+  name: string;
+}
+
+function AuthPage(): React.ReactElement {
+  const navigate = useNavigate();
+  const [mode, setMode] = useState<AuthMode>("login");
+  const [role, setRole] = useState<UserRole>("candidate");
+  const [form, setForm] = useState<AuthForm>({
+    email: "",
+    password: "",
+    name: "",
+  });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (mode === "register") {
-      navigate(role === "candidate" ? "/onboarding/candidate" : "/onboarding/employer");
+      navigate(
+        role === "candidate"
+          ? "/onboarding/candidate"
+          : "/onboarding/employer"
+      );
     } else {
       navigate("/feed");
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-slate-50 flex flex-col"
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+    >
       <Navbar showLinks={false} />
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm w-full max-w-md p-8">
           {/* Toggle */}
           <div className="flex bg-slate-100 rounded-lg p-1 mb-8">
-            {["login", "register"].map((m) => (
+            {(["login", "register"] as AuthMode[]).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
@@ -578,7 +715,9 @@ function AuthPage() {
                 <Input
                   placeholder="Arjun Mehta"
                   value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setForm({ ...form, name: e.target.value })
+                  }
                 />
               </div>
             )}
@@ -588,7 +727,9 @@ function AuthPage() {
                 type="email"
                 placeholder="you@example.com"
                 value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setForm({ ...form, email: e.target.value })
+                }
               />
             </div>
             <div>
@@ -597,7 +738,9 @@ function AuthPage() {
                 type="password"
                 placeholder="••••••••"
                 value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setForm({ ...form, password: e.target.value })
+                }
               />
             </div>
 
@@ -605,10 +748,12 @@ function AuthPage() {
               <div>
                 <Label required>I am</Label>
                 <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { val: "candidate", label: "Looking for a job", icon: "🔍" },
-                    { val: "employer", label: "Hiring talent", icon: "🏢" },
-                  ].map((opt) => (
+                  {(
+                    [
+                      { val: "candidate" as UserRole, label: "Looking for a job", icon: "🔍" },
+                      { val: "employer" as UserRole, label: "Hiring talent", icon: "🏢" },
+                    ]
+                  ).map((opt) => (
                     <button
                       key={opt.val}
                       type="button"
@@ -633,7 +778,7 @@ function AuthPage() {
               </div>
             )}
 
-            <Btn variant="primary" className="w-full mt-2">
+            <Btn variant="primary" className="w-full mt-2" type="submit">
               {mode === "login" ? "Log in" : "Create Account"}
             </Btn>
           </form>
@@ -645,21 +790,43 @@ function AuthPage() {
 
 // ─── 3. CANDIDATE ONBOARDING ──────────────────────────────────────────────────
 
-function CandidateOnboarding() {
+interface OnboardingForm {
+  name: string;
+  location: string;
+  bio: string;
+  skills: string[];
+  preferredRoles: string;
+  experience: string;
+  education: string;
+  resumeLink: string;
+}
+
+function CandidateOnboarding(): React.ReactElement {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
-  const [form, setForm] = useState({
-    name: "", location: "", bio: "",
-    skills: [], preferredRoles: "", experience: "",
-    education: "", resumeLink: "",
+  const [step, setStep] = useState<number>(1);
+  const [form, setForm] = useState<OnboardingForm>({
+    name: "",
+    location: "",
+    bio: "",
+    skills: [],
+    preferredRoles: "",
+    experience: "",
+    education: "",
+    resumeLink: "",
   });
 
   const STEPS = ["Personal Info", "Skills & Experience", "Education & Resume"];
 
-  const update = (k, v) => setForm({ ...form, [k]: v });
+  const update = <K extends keyof OnboardingForm>(
+    k: K,
+    v: OnboardingForm[K]
+  ): void => setForm({ ...form, [k]: v });
 
   return (
-    <div className="min-h-screen bg-slate-50" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-slate-50"
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+    >
       <AppNav />
       <div className="max-w-2xl mx-auto px-4 py-12">
         {/* Progress */}
@@ -706,15 +873,34 @@ function CandidateOnboarding() {
             <div className="space-y-5">
               <div>
                 <Label required>Full Name</Label>
-                <Input value={form.name} onChange={(e) => update("name", e.target.value)} placeholder="Priya Nair" />
+                <Input
+                  value={form.name}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    update("name", e.target.value)
+                  }
+                  placeholder="Priya Nair"
+                />
               </div>
               <div>
                 <Label required>Location</Label>
-                <Input value={form.location} onChange={(e) => update("location", e.target.value)} placeholder="Bengaluru, Karnataka" />
+                <Input
+                  value={form.location}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    update("location", e.target.value)
+                  }
+                  placeholder="Bengaluru, Karnataka"
+                />
               </div>
               <div>
                 <Label>Bio</Label>
-                <Textarea rows={4} value={form.bio} onChange={(e) => update("bio", e.target.value)} placeholder="A brief intro about yourself..." />
+                <Textarea
+                  rows={4}
+                  value={form.bio}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    update("bio", e.target.value)
+                  }
+                  placeholder="A brief intro about yourself..."
+                />
               </div>
             </div>
           )}
@@ -725,17 +911,28 @@ function CandidateOnboarding() {
                 <Label required>Skills</Label>
                 <TagInput
                   tags={form.skills}
-                  setTags={(v) => update("skills", v)}
+                  setTags={(v: string[]) => update("skills", v)}
                   placeholder="Type a skill, press Enter..."
                 />
               </div>
               <div>
                 <Label>Preferred Roles</Label>
-                <Input value={form.preferredRoles} onChange={(e) => update("preferredRoles", e.target.value)} placeholder="Frontend Engineer, Full-stack Developer" />
+                <Input
+                  value={form.preferredRoles}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    update("preferredRoles", e.target.value)
+                  }
+                  placeholder="Frontend Engineer, Full-stack Developer"
+                />
               </div>
               <div>
                 <Label required>Years of Experience</Label>
-                <Select value={form.experience} onChange={(e) => update("experience", e.target.value)}>
+                <Select
+                  value={form.experience}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    update("experience", e.target.value)
+                  }
+                >
                   <option value="">Select experience</option>
                   <option>0–1 years (Fresher)</option>
                   <option>1–3 years</option>
@@ -751,15 +948,33 @@ function CandidateOnboarding() {
             <div className="space-y-5">
               <div>
                 <Label>Education</Label>
-                <Input value={form.education} onChange={(e) => update("education", e.target.value)} placeholder="B.Tech CSE, IIT Bombay, 2022" />
+                <Input
+                  value={form.education}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    update("education", e.target.value)
+                  }
+                  placeholder="B.Tech CSE, IIT Bombay, 2022"
+                />
               </div>
               <div>
                 <Label>Resume Link</Label>
-                <Input type="url" value={form.resumeLink} onChange={(e) => update("resumeLink", e.target.value)} placeholder="https://drive.google.com/..." />
+                <Input
+                  type="url"
+                  value={form.resumeLink}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    update("resumeLink", e.target.value)
+                  }
+                  placeholder="https://drive.google.com/..."
+                />
               </div>
               <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-                <p className="text-sm text-blue-700 font-medium mb-1">You're almost done!</p>
-                <p className="text-sm text-blue-600">After submitting, we'll analyze your profile and show you AI-matched job recommendations.</p>
+                <p className="text-sm text-blue-700 font-medium mb-1">
+                  You're almost done!
+                </p>
+                <p className="text-sm text-blue-600">
+                  After submitting, we'll analyze your profile and show you
+                  AI-matched job recommendations.
+                </p>
               </div>
             </div>
           )}
@@ -767,13 +982,17 @@ function CandidateOnboarding() {
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
             <Btn
               variant="secondary"
-              onClick={() => step === 1 ? navigate("/auth") : setStep(step - 1)}
+              onClick={() =>
+                step === 1 ? navigate("/auth") : setStep(step - 1)
+              }
             >
               {step === 1 ? "Back" : "← Previous"}
             </Btn>
             <Btn
               variant="primary"
-              onClick={() => step === 3 ? navigate("/feed") : setStep(step + 1)}
+              onClick={() =>
+                step === 3 ? navigate("/feed") : setStep(step + 1)
+              }
             >
               {step === 3 ? "Complete Profile" : "Next Step →"}
             </Btn>
@@ -786,9 +1005,19 @@ function CandidateOnboarding() {
 
 // ─── 4. CANDIDATE FEED ────────────────────────────────────────────────────────
 
-function CandidateFeed() {
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [filters, setFilters] = useState({ type: "", location: "", exp: "" });
+interface FeedFilters {
+  type: string;
+  location: string;
+  exp: string;
+}
+
+function CandidateFeed(): React.ReactElement {
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [filters, setFilters] = useState<FeedFilters>({
+    type: "",
+    location: "",
+    exp: "",
+  });
 
   const filtered = JOBS.filter((j) => {
     if (filters.type && j.type !== filters.type) return false;
@@ -796,10 +1025,13 @@ function CandidateFeed() {
     return true;
   });
 
-  const locations = [...new Set(JOBS.map((j) => j.location))];
+  const locations: string[] = [...new Set(JOBS.map((j) => j.location))];
 
   return (
-    <div className="min-h-screen bg-slate-50" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-slate-50"
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+    >
       <AppNav />
       <div className="max-w-7xl mx-auto px-6 py-8 flex gap-6">
         {/* Sidebar */}
@@ -809,7 +1041,12 @@ function CandidateFeed() {
             <div className="space-y-4">
               <div>
                 <Label>Role Type</Label>
-                <Select value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value })}>
+                <Select
+                  value={filters.type}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setFilters({ ...filters, type: e.target.value })
+                  }
+                >
                   <option value="">All Types</option>
                   <option>Full-time</option>
                   <option>Part-time</option>
@@ -818,14 +1055,26 @@ function CandidateFeed() {
               </div>
               <div>
                 <Label>Location</Label>
-                <Select value={filters.location} onChange={(e) => setFilters({ ...filters, location: e.target.value })}>
+                <Select
+                  value={filters.location}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setFilters({ ...filters, location: e.target.value })
+                  }
+                >
                   <option value="">All Locations</option>
-                  {locations.map((l) => <option key={l}>{l}</option>)}
+                  {locations.map((l) => (
+                    <option key={l}>{l}</option>
+                  ))}
                 </Select>
               </div>
               <div>
                 <Label>Experience</Label>
-                <Select value={filters.exp} onChange={(e) => setFilters({ ...filters, exp: e.target.value })}>
+                <Select
+                  value={filters.exp}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setFilters({ ...filters, exp: e.target.value })
+                  }
+                >
                   <option value="">Any</option>
                   <option>0–1 years</option>
                   <option>1–3 years</option>
@@ -849,26 +1098,40 @@ function CandidateFeed() {
             <h1 className="text-xl font-bold text-slate-900">
               {filtered.length} jobs matched
             </h1>
-            <span className="text-sm text-slate-500">Sorted by match score</span>
+            <span className="text-sm text-slate-500">
+              Sorted by match score
+            </span>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            {filtered
+            {[...filtered]
               .sort((a, b) => b.matchScore - a.matchScore)
               .map((job) => (
-                <JobCard key={job.id} job={job} onClick={() => setSelectedJob(job)} />
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  onClick={() => setSelectedJob(job)}
+                />
               ))}
           </div>
         </main>
       </div>
 
       {selectedJob && (
-        <JobDetailModal job={selectedJob} onClose={() => setSelectedJob(null)} />
+        <JobDetailModal
+          job={selectedJob}
+          onClose={() => setSelectedJob(null)}
+        />
       )}
     </div>
   );
 }
 
-function JobCard({ job, onClick }) {
+interface JobCardProps {
+  job: Job;
+  onClick: () => void;
+}
+
+function JobCard({ job, onClick }: JobCardProps): React.ReactElement {
   return (
     <div
       onClick={onClick}
@@ -876,7 +1139,9 @@ function JobCard({ job, onClick }) {
     >
       <div className="flex items-start justify-between mb-3">
         <div>
-          <h3 className="font-semibold text-slate-900 text-base leading-snug">{job.title}</h3>
+          <h3 className="font-semibold text-slate-900 text-base leading-snug">
+            {job.title}
+          </h3>
           <p className="text-sm text-slate-500 mt-0.5">{job.company}</p>
         </div>
         <MatchBadge score={job.matchScore} />
@@ -888,7 +1153,10 @@ function JobCard({ job, onClick }) {
       </div>
       <div className="flex flex-wrap gap-1.5 mb-4">
         {job.skills.slice(0, 3).map((s) => (
-          <span key={s} className="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full">
+          <span
+            key={s}
+            className="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full"
+          >
             {s}
           </span>
         ))}
@@ -908,20 +1176,36 @@ function JobCard({ job, onClick }) {
 
 // ─── 5. JOB DETAIL MODAL ─────────────────────────────────────────────────────
 
-function JobDetailModal({ job, onClose }) {
-  const [showProposal, setShowProposal] = useState(false);
-  const [proposal, setProposal] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+interface JobDetailModalProps {
+  job: Job;
+  onClose: () => void;
+}
+
+function JobDetailModal({
+  job,
+  onClose,
+}: JobDetailModalProps): React.ReactElement {
+  const [showProposal, setShowProposal] = useState<boolean>(false);
+  const [proposal, setProposal] = useState<string>("");
+  const [submitted, setSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
+
+  const handleBackdropClick = (
+    e: React.MouseEvent<HTMLDivElement>
+  ): void => {
+    if (e.target === e.currentTarget) onClose();
+  };
 
   return (
     <div
       className="fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-end"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
+      onClick={handleBackdropClick}
     >
       <div className="bg-white h-full w-full max-w-xl overflow-y-auto shadow-2xl">
         {/* Header */}
@@ -930,20 +1214,37 @@ function JobDetailModal({ job, onClose }) {
             <h2 className="font-bold text-slate-900 text-lg">{job.title}</h2>
             <p className="text-sm text-slate-500">{job.company}</p>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-700 text-2xl transition-colors">×</button>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-700 text-2xl transition-colors"
+          >
+            ×
+          </button>
         </div>
 
         <div className="px-6 py-6 space-y-6">
           {/* Meta */}
           <div className="grid grid-cols-2 gap-3">
-            {[
-              ["📍 Location", job.location],
-              ["💼 Type", job.type],
-              ["⏱ Experience", job.experience],
-              ["💰 Salary", job.salary],
-              ["👥 Openings", `${job.openings} position${job.openings > 1 ? "s" : ""}`],
-              ["📅 Deadline", new Date(job.deadline).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })],
-            ].map(([label, val]) => (
+            {(
+              [
+                ["📍 Location", job.location],
+                ["💼 Type", job.type],
+                ["⏱ Experience", job.experience],
+                ["💰 Salary", job.salary],
+                [
+                  "👥 Openings",
+                  `${job.openings} position${job.openings > 1 ? "s" : ""}`,
+                ],
+                [
+                  "📅 Deadline",
+                  new Date(job.deadline).toLocaleDateString("en-IN", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }),
+                ],
+              ] as [string, string][]
+            ).map(([label, val]) => (
               <div key={label} className="bg-slate-50 rounded-lg p-3">
                 <div className="text-xs text-slate-500 mb-0.5">{label}</div>
                 <div className="text-sm font-medium text-slate-900">{val}</div>
@@ -959,16 +1260,25 @@ function JobDetailModal({ job, onClose }) {
 
           {/* Description */}
           <div>
-            <h3 className="font-semibold text-slate-900 mb-2 text-sm">About the Role</h3>
-            <p className="text-sm text-slate-600 leading-relaxed">{job.description}</p>
+            <h3 className="font-semibold text-slate-900 mb-2 text-sm">
+              About the Role
+            </h3>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              {job.description}
+            </p>
           </div>
 
           {/* Required Skills */}
           <div>
-            <h3 className="font-semibold text-slate-900 mb-2 text-sm">Required Skills</h3>
+            <h3 className="font-semibold text-slate-900 mb-2 text-sm">
+              Required Skills
+            </h3>
             <div className="flex flex-wrap gap-2">
               {job.skills.map((s) => (
-                <span key={s} className="bg-blue-50 text-blue-700 text-sm px-3 py-1 rounded-full font-medium">
+                <span
+                  key={s}
+                  className="bg-blue-50 text-blue-700 text-sm px-3 py-1 rounded-full font-medium"
+                >
                   {s}
                 </span>
               ))}
@@ -978,20 +1288,31 @@ function JobDetailModal({ job, onClose }) {
           {/* Apply Section */}
           {!submitted ? (
             <div className="space-y-3 border-t border-slate-100 pt-4">
-              <h3 className="font-semibold text-slate-900 text-sm">Apply Now</h3>
+              <h3 className="font-semibold text-slate-900 text-sm">
+                Apply Now
+              </h3>
 
               {!showProposal ? (
                 <div className="space-y-3">
-                  <Btn variant="primary" className="w-full" onClick={() => setShowProposal(true)}>
+                  <Btn
+                    variant="primary"
+                    className="w-full"
+                    onClick={() => setShowProposal(true)}
+                  >
                     Apply via Proposal — Free
                   </Btn>
                   <div className="border border-slate-200 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-slate-800">Apply via Simulation</span>
-                      <span className="text-sm font-bold text-slate-900">₹299</span>
+                      <span className="text-sm font-semibold text-slate-800">
+                        Apply via Simulation
+                      </span>
+                      <span className="text-sm font-bold text-slate-900">
+                        ₹299
+                      </span>
                     </div>
                     <p className="text-xs text-slate-500 mb-3 leading-relaxed">
-                      Complete a 30-minute AI-simulated task that proves your skills. Verified results are shown to the employer.
+                      Complete a 30-minute AI-simulated task that proves your
+                      skills. Verified results are shown to the employer.
                     </p>
                     <Btn variant="secondary" className="w-full">
                       Pay ₹299 & Start Simulation
@@ -1003,14 +1324,24 @@ function JobDetailModal({ job, onClose }) {
                   <Textarea
                     rows={5}
                     value={proposal}
-                    onChange={(e) => setProposal(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                      setProposal(e.target.value)
+                    }
                     placeholder="Tell the employer why you're a great fit. Mention relevant experience, projects, and skills..."
                   />
                   <div className="flex gap-2">
-                    <Btn variant="secondary" onClick={() => setShowProposal(false)} className="flex-1">
+                    <Btn
+                      variant="secondary"
+                      onClick={() => setShowProposal(false)}
+                      className="flex-1"
+                    >
                       Cancel
                     </Btn>
-                    <Btn variant="primary" onClick={() => setSubmitted(true)} className="flex-1">
+                    <Btn
+                      variant="primary"
+                      onClick={() => setSubmitted(true)}
+                      className="flex-1"
+                    >
                       Submit Proposal
                     </Btn>
                   </div>
@@ -1020,14 +1351,20 @@ function JobDetailModal({ job, onClose }) {
           ) : (
             <div className="bg-green-50 border border-green-200 rounded-xl p-5 text-center">
               <div className="text-2xl mb-2">✓</div>
-              <p className="font-semibold text-green-800 mb-1">Application Submitted!</p>
-              <p className="text-sm text-green-700">You can track this in your Applications tab.</p>
+              <p className="font-semibold text-green-800 mb-1">
+                Application Submitted!
+              </p>
+              <p className="text-sm text-green-700">
+                You can track this in your Applications tab.
+              </p>
             </div>
           )}
 
           {/* Contact */}
           <div className="border-t border-slate-100 pt-4">
-            <h3 className="font-semibold text-slate-900 mb-2 text-sm">Contact</h3>
+            <h3 className="font-semibold text-slate-900 mb-2 text-sm">
+              Contact
+            </h3>
             <p className="text-sm text-blue-600">{job.contact}</p>
           </div>
         </div>
@@ -1038,21 +1375,32 @@ function JobDetailModal({ job, onClose }) {
 
 // ─── 6. APPLICATION TRACKER ───────────────────────────────────────────────────
 
-function ApplicationTracker() {
+function ApplicationTracker(): React.ReactElement {
   return (
-    <div className="min-h-screen bg-slate-50" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-slate-50"
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+    >
       <AppNav />
       <div className="max-w-5xl mx-auto px-6 py-10">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">My Applications</h1>
-          <p className="text-slate-500 text-sm mt-1">Track the status of all your submissions</p>
+          <h1 className="text-2xl font-bold text-slate-900">
+            My Applications
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            Track the status of all your submissions
+          </p>
         </div>
 
         {APPLICATIONS.length === 0 ? (
           <div className="bg-white border border-slate-200 rounded-xl p-16 text-center shadow-sm">
             <div className="text-4xl mb-4">📭</div>
-            <p className="font-semibold text-slate-900 mb-1">No applications yet</p>
-            <p className="text-sm text-slate-500">Start exploring jobs and submit your first application.</p>
+            <p className="font-semibold text-slate-900 mb-1">
+              No applications yet
+            </p>
+            <p className="text-sm text-slate-500">
+              Start exploring jobs and submit your first application.
+            </p>
             <Link to="/feed" className="mt-4 inline-block">
               <Btn variant="primary">Browse Jobs</Btn>
             </Link>
@@ -1062,27 +1410,44 @@ function ApplicationTracker() {
             <table className="w-full">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200">
-                  {["Company", "Role", "Type", "Submitted", "Status"].map((h) => (
-                    <th key={h} className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-5 py-3.5">
-                      {h}
-                    </th>
-                  ))}
+                  {["Company", "Role", "Type", "Submitted", "Status"].map(
+                    (h) => (
+                      <th
+                        key={h}
+                        className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-5 py-3.5"
+                      >
+                        {h}
+                      </th>
+                    )
+                  )}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {APPLICATIONS.map((app) => (
                   <tr key={app.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-5 py-4 font-medium text-slate-900 text-sm">{app.company}</td>
-                    <td className="px-5 py-4 text-slate-700 text-sm">{app.role}</td>
+                    <td className="px-5 py-4 font-medium text-slate-900 text-sm">
+                      {app.company}
+                    </td>
+                    <td className="px-5 py-4 text-slate-700 text-sm">
+                      {app.role}
+                    </td>
                     <td className="px-5 py-4">
-                      <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                        app.type === "Simulation" ? "bg-purple-50 text-purple-700" : "bg-slate-100 text-slate-600"
-                      }`}>
+                      <span
+                        className={`text-xs font-medium px-2.5 py-1 rounded-full ${
+                          app.type === "Simulation"
+                            ? "bg-purple-50 text-purple-700"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
                         {app.type}
                       </span>
                     </td>
                     <td className="px-5 py-4 text-slate-500 text-sm">
-                      {new Date(app.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                      {new Date(app.date).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </td>
                     <td className="px-5 py-4">
                       <StatusBadge status={app.status} />
@@ -1100,31 +1465,50 @@ function ApplicationTracker() {
 
 // ─── 7. EMPLOYER DASHBOARD ────────────────────────────────────────────────────
 
-function EmployerDashboard() {
+function EmployerDashboard(): React.ReactElement {
   const navigate = useNavigate();
 
-  const totalApplicants = EMPLOYER_JOBS.reduce((s, j) => s + j.applicants, 0);
-  const pendingReviews = EMPLOYER_JOBS.filter((j) => j.status === "Active").reduce((s, j) => s + j.applicants, 0);
+  const totalApplicants = EMPLOYER_JOBS.reduce(
+    (s, j) => s + j.applicants,
+    0
+  );
+  const pendingReviews = EMPLOYER_JOBS.filter(
+    (j) => j.status === "Active"
+  ).reduce((s, j) => s + j.applicants, 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 relative" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-slate-50 relative"
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+    >
       <AppNav />
       <div className="max-w-6xl mx-auto px-6 py-10">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">Employer Dashboard</h1>
-          <p className="text-slate-500 text-sm mt-1">Manage your job postings and applicants</p>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Employer Dashboard
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            Manage your job postings and applicants
+          </p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-5 mb-8">
-          {[
-            { label: "Jobs Posted", value: EMPLOYER_JOBS.length, color: "text-slate-900" },
-            { label: "Total Applicants", value: totalApplicants, color: "text-blue-700" },
-            { label: "Pending Reviews", value: pendingReviews, color: "text-amber-700" },
-          ].map((s) => (
-            <div key={s.label} className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+          {(
+            [
+              { label: "Jobs Posted", value: EMPLOYER_JOBS.length, color: "text-slate-900" },
+              { label: "Total Applicants", value: totalApplicants, color: "text-blue-700" },
+              { label: "Pending Reviews", value: pendingReviews, color: "text-amber-700" },
+            ]
+          ).map((s) => (
+            <div
+              key={s.label}
+              className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm"
+            >
               <p className="text-sm text-slate-500 mb-1">{s.label}</p>
-              <p className={`text-4xl font-bold tracking-tight ${s.color}`}>{s.value}</p>
+              <p className={`text-4xl font-bold tracking-tight ${s.color}`}>
+                {s.value}
+              </p>
             </div>
           ))}
         </div>
@@ -1137,8 +1521,18 @@ function EmployerDashboard() {
           <table className="w-full">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
-                {["Title", "Status", "Openings", "Applicants", "Deadline", "Actions"].map((h) => (
-                  <th key={h} className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-5 py-3.5">
+                {[
+                  "Title",
+                  "Status",
+                  "Openings",
+                  "Applicants",
+                  "Deadline",
+                  "Actions",
+                ].map((h) => (
+                  <th
+                    key={h}
+                    className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wide px-5 py-3.5"
+                  >
                     {h}
                   </th>
                 ))}
@@ -1146,24 +1540,42 @@ function EmployerDashboard() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {EMPLOYER_JOBS.map((job) => (
-                <tr key={job.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-5 py-4 font-medium text-slate-900 text-sm">{job.title}</td>
+                <tr
+                  key={job.id}
+                  className="hover:bg-slate-50 transition-colors"
+                >
+                  <td className="px-5 py-4 font-medium text-slate-900 text-sm">
+                    {job.title}
+                  </td>
                   <td className="px-5 py-4">
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      job.status === "Active" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
-                    }`}>
+                    <span
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                        job.status === "Active"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-slate-100 text-slate-500"
+                      }`}
+                    >
                       {job.status}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-slate-700 text-sm">{job.openings}</td>
-                  <td className="px-5 py-4 text-slate-700 text-sm font-medium">{job.applicants}</td>
+                  <td className="px-5 py-4 text-slate-700 text-sm">
+                    {job.openings}
+                  </td>
+                  <td className="px-5 py-4 text-slate-700 text-sm font-medium">
+                    {job.applicants}
+                  </td>
                   <td className="px-5 py-4 text-slate-500 text-sm">
-                    {new Date(job.deadline).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                    {new Date(job.deadline).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                    })}
                   </td>
                   <td className="px-5 py-4">
                     <Btn
                       variant="secondary"
-                      onClick={() => navigate(`/employer/applicants/${job.id}`)}
+                      onClick={() =>
+                        navigate(`/employer/applicants/${job.id}`)
+                      }
                       className="text-xs py-1.5 px-3"
                     >
                       View Applicants
@@ -1189,52 +1601,112 @@ function EmployerDashboard() {
 
 // ─── 8. POST JOB FORM ────────────────────────────────────────────────────────
 
-function PostJobForm() {
+interface PostJobFormState {
+  title: string;
+  description: string;
+  skills: string[];
+  niceToHave: string[];
+  experience: string;
+  location: string;
+  type: string;
+  salaryMin: string;
+  salaryMax: string;
+  openings: string;
+  deadline: string;
+}
+
+function PostJobForm(): React.ReactElement {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    title: "", description: "",
-    skills: [], niceToHave: [],
-    experience: "", location: "", type: "",
-    salaryMin: "", salaryMax: "",
-    openings: "", deadline: "",
+  const [form, setForm] = useState<PostJobFormState>({
+    title: "",
+    description: "",
+    skills: [],
+    niceToHave: [],
+    experience: "",
+    location: "",
+    type: "",
+    salaryMin: "",
+    salaryMax: "",
+    openings: "",
+    deadline: "",
   });
 
-  const update = (k, v) => setForm({ ...form, [k]: v });
-  const ghostWarning = parseInt(form.openings) > 50;
+  const update = <K extends keyof PostJobFormState>(
+    k: K,
+    v: PostJobFormState[K]
+  ): void => setForm({ ...form, [k]: v });
+
+  const ghostWarning = parseInt(form.openings, 10) > 50;
 
   return (
-    <div className="min-h-screen bg-slate-50" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-slate-50"
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+    >
       <AppNav />
       <div className="max-w-2xl mx-auto px-4 py-10">
         <div className="mb-8">
-          <button onClick={() => navigate("/employer/dashboard")} className="text-sm text-slate-500 hover:text-slate-700 mb-3 flex items-center gap-1">
+          <button
+            onClick={() => navigate("/employer/dashboard")}
+            className="text-sm text-slate-500 hover:text-slate-700 mb-3 flex items-center gap-1"
+          >
             ← Back to Dashboard
           </button>
-          <h1 className="text-2xl font-bold text-slate-900">Post a New Job</h1>
-          <p className="text-slate-500 text-sm mt-1">Fill in the details to publish your role on HireAxis</p>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Post a New Job
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            Fill in the details to publish your role on HireAxis
+          </p>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm space-y-5">
           <div>
             <Label required>Job Title</Label>
-            <Input value={form.title} onChange={(e) => update("title", e.target.value)} placeholder="e.g. Senior Backend Engineer" />
+            <Input
+              value={form.title}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("title", e.target.value)
+              }
+              placeholder="e.g. Senior Backend Engineer"
+            />
           </div>
           <div>
             <Label required>Description</Label>
-            <Textarea rows={5} value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Describe the role, responsibilities, and what makes it great..." />
+            <Textarea
+              rows={5}
+              value={form.description}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                update("description", e.target.value)
+              }
+              placeholder="Describe the role, responsibilities, and what makes it great..."
+            />
           </div>
           <div>
             <Label required>Required Skills</Label>
-            <TagInput tags={form.skills} setTags={(v) => update("skills", v)} placeholder="e.g. Python, press Enter" />
+            <TagInput
+              tags={form.skills}
+              setTags={(v: string[]) => update("skills", v)}
+              placeholder="e.g. Python, press Enter"
+            />
           </div>
           <div>
             <Label>Nice to Have</Label>
-            <TagInput tags={form.niceToHave} setTags={(v) => update("niceToHave", v)} placeholder="e.g. Docker, press Enter" />
+            <TagInput
+              tags={form.niceToHave}
+              setTags={(v: string[]) => update("niceToHave", v)}
+              placeholder="e.g. Docker, press Enter"
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label required>Experience Required</Label>
-              <Select value={form.experience} onChange={(e) => update("experience", e.target.value)}>
+              <Select
+                value={form.experience}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  update("experience", e.target.value)
+                }
+              >
                 <option value="">Select</option>
                 <option>0–1 years</option>
                 <option>1–3 years</option>
@@ -1245,7 +1717,12 @@ function PostJobForm() {
             </div>
             <div>
               <Label required>Role Type</Label>
-              <Select value={form.type} onChange={(e) => update("type", e.target.value)}>
+              <Select
+                value={form.type}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  update("type", e.target.value)
+                }
+              >
                 <option value="">Select</option>
                 <option>Full-time</option>
                 <option>Part-time</option>
@@ -1256,47 +1733,87 @@ function PostJobForm() {
           </div>
           <div>
             <Label>Location</Label>
-            <Input value={form.location} onChange={(e) => update("location", e.target.value)} placeholder="Bengaluru / Remote" />
+            <Input
+              value={form.location}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("location", e.target.value)
+              }
+              placeholder="Bengaluru / Remote"
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label>Salary Min (LPA)</Label>
-              <Input type="number" value={form.salaryMin} onChange={(e) => update("salaryMin", e.target.value)} placeholder="e.g. 12" />
+              <Input
+                type="number"
+                value={form.salaryMin}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  update("salaryMin", e.target.value)
+                }
+                placeholder="e.g. 12"
+              />
             </div>
             <div>
               <Label>Salary Max (LPA)</Label>
-              <Input type="number" value={form.salaryMax} onChange={(e) => update("salaryMax", e.target.value)} placeholder="e.g. 20" />
+              <Input
+                type="number"
+                value={form.salaryMax}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  update("salaryMax", e.target.value)
+                }
+                placeholder="e.g. 20"
+              />
             </div>
           </div>
           <div>
             <Label required>Number of Openings</Label>
             <Input
               type="number"
-              min="1"
+              min={1}
               value={form.openings}
-              onChange={(e) => update("openings", e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("openings", e.target.value)
+              }
               placeholder="e.g. 3"
-              className={ghostWarning ? "border-amber-400 focus:ring-amber-500" : ""}
+              className={
+                ghostWarning ? "border-amber-400 focus:ring-amber-500" : ""
+              }
             />
             {ghostWarning && (
               <div className="mt-2 flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-3">
                 <span className="text-amber-500 mt-0.5">⚠</span>
                 <p className="text-sm text-amber-800">
-                  <strong>Large hiring claims are monitored</strong> under our anti-ghost-hiring policy. Postings with unusually high openings are subject to manual verification.
+                  <strong>Large hiring claims are monitored</strong> under our
+                  anti-ghost-hiring policy. Postings with unusually high
+                  openings are subject to manual verification.
                 </p>
               </div>
             )}
           </div>
           <div>
             <Label>Application Deadline</Label>
-            <Input type="date" value={form.deadline} onChange={(e) => update("deadline", e.target.value)} />
+            <Input
+              type="date"
+              value={form.deadline}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("deadline", e.target.value)
+              }
+            />
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex gap-3">
-            <Btn variant="secondary" onClick={() => navigate("/employer/dashboard")} className="flex-1">
+            <Btn
+              variant="secondary"
+              onClick={() => navigate("/employer/dashboard")}
+              className="flex-1"
+            >
               Cancel
             </Btn>
-            <Btn variant="primary" onClick={() => navigate("/employer/dashboard")} className="flex-1">
+            <Btn
+              variant="primary"
+              onClick={() => navigate("/employer/dashboard")}
+              className="flex-1"
+            >
               Publish Job
             </Btn>
           </div>
@@ -1308,25 +1825,27 @@ function PostJobForm() {
 
 // ─── 9. APPLICANT REVIEW PAGE ─────────────────────────────────────────────────
 
-function ApplicantReviewPage() {
-  const { jobId } = useParams();
-  const job = EMPLOYER_JOBS.find((j) => j.id === jobId) || EMPLOYER_JOBS[0];
-  const [applicants, setApplicants] = useState(APPLICANTS);
+interface ApplicantCardProps {
+  ap: Applicant;
+  showActions?: boolean;
+  onHandle: (id: string, action: ApplicantStatus) => void;
+}
 
-  const handle = (id, action) => {
-    setApplicants((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, status: action } : a))
-    );
-  };
-
-  const shortlisted = applicants.filter((a) => a.status === "shortlisted");
-  const pending = applicants.filter((a) => a.status === "pending");
-  const rejected = applicants.filter((a) => a.status === "rejected");
-
-  const ApplicantCard = ({ ap, showActions = true }) => (
-    <div className={`bg-white border rounded-xl p-5 shadow-sm ${
-      ap.status === "shortlisted" ? "border-green-200" : ap.status === "rejected" ? "border-red-100 opacity-70" : "border-slate-200"
-    }`}>
+function ApplicantCard({
+  ap,
+  showActions = true,
+  onHandle,
+}: ApplicantCardProps): React.ReactElement {
+  return (
+    <div
+      className={`bg-white border rounded-xl p-5 shadow-sm ${
+        ap.status === "shortlisted"
+          ? "border-green-200"
+          : ap.status === "rejected"
+          ? "border-red-100 opacity-70"
+          : "border-slate-200"
+      }`}
+    >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700">
@@ -1341,7 +1860,12 @@ function ApplicantReviewPage() {
       </div>
       <div className="flex flex-wrap gap-1.5 mb-3">
         {ap.skills.map((s) => (
-          <span key={s} className="bg-slate-100 text-slate-600 text-xs px-2.5 py-0.5 rounded-full">{s}</span>
+          <span
+            key={s}
+            className="bg-slate-100 text-slate-600 text-xs px-2.5 py-0.5 rounded-full"
+          >
+            {s}
+          </span>
         ))}
       </div>
       <p className="text-xs text-slate-500 leading-relaxed mb-4 line-clamp-2">
@@ -1349,10 +1873,18 @@ function ApplicantReviewPage() {
       </p>
       {showActions && ap.status === "pending" && (
         <div className="flex gap-2">
-          <Btn variant="success" className="flex-1 text-xs py-2" onClick={() => handle(ap.id, "shortlisted")}>
+          <Btn
+            variant="success"
+            className="flex-1 text-xs py-2"
+            onClick={() => onHandle(ap.id, "shortlisted")}
+          >
             ✓ Shortlist
           </Btn>
-          <Btn variant="danger" className="flex-1 text-xs py-2" onClick={() => handle(ap.id, "rejected")}>
+          <Btn
+            variant="danger"
+            className="flex-1 text-xs py-2"
+            onClick={() => onHandle(ap.id, "rejected")}
+          >
             ✕ Reject
           </Btn>
         </div>
@@ -1369,26 +1901,57 @@ function ApplicantReviewPage() {
       )}
     </div>
   );
+}
+
+function ApplicantReviewPage(): React.ReactElement {
+  const { jobId } = useParams<{ jobId: string }>();
+  const job =
+    EMPLOYER_JOBS.find((j) => j.id === jobId) ?? EMPLOYER_JOBS[0];
+  const [applicants, setApplicants] = useState<Applicant[]>(APPLICANTS);
+
+  const handle = (id: string, action: ApplicantStatus): void => {
+    setApplicants((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, status: action } : a))
+    );
+  };
+
+  const shortlisted = applicants.filter((a) => a.status === "shortlisted");
+  const pending = applicants.filter((a) => a.status === "pending");
+  const rejected = applicants.filter((a) => a.status === "rejected");
 
   return (
-    <div className="min-h-screen bg-slate-50" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-slate-50"
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+    >
       <AppNav />
       <div className="max-w-4xl mx-auto px-6 py-10">
         <div className="mb-8">
-          <Link to="/employer/dashboard" className="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1 mb-3">
+          <Link
+            to="/employer/dashboard"
+            className="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1 mb-3"
+          >
             ← Back to Dashboard
           </Link>
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">{job.title}</h1>
+              <h1 className="text-2xl font-bold text-slate-900">
+                {job.title}
+              </h1>
               <p className="text-slate-500 text-sm mt-1">
                 {applicants.length} applicants · {job.openings} openings
               </p>
             </div>
             <div className="flex gap-3 text-sm text-slate-500">
-              <span className="bg-green-100 text-green-700 px-2.5 py-1 rounded-full text-xs font-semibold">{shortlisted.length} Shortlisted</span>
-              <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full text-xs font-semibold">{pending.length} Pending</span>
-              <span className="bg-red-100 text-red-600 px-2.5 py-1 rounded-full text-xs font-semibold">{rejected.length} Rejected</span>
+              <span className="bg-green-100 text-green-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                {shortlisted.length} Shortlisted
+              </span>
+              <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full text-xs font-semibold">
+                {pending.length} Pending
+              </span>
+              <span className="bg-red-100 text-red-600 px-2.5 py-1 rounded-full text-xs font-semibold">
+                {rejected.length} Rejected
+              </span>
             </div>
           </div>
         </div>
@@ -1401,7 +1964,14 @@ function ApplicantReviewPage() {
               Shortlisted ({shortlisted.length})
             </h2>
             <div className="grid grid-cols-2 gap-4">
-              {shortlisted.map((ap) => <ApplicantCard key={ap.id} ap={ap} showActions={false} />)}
+              {shortlisted.map((ap) => (
+                <ApplicantCard
+                  key={ap.id}
+                  ap={ap}
+                  showActions={false}
+                  onHandle={handle}
+                />
+              ))}
             </div>
           </div>
         )}
@@ -1414,7 +1984,9 @@ function ApplicantReviewPage() {
               Review ({pending.length})
             </h2>
             <div className="grid grid-cols-2 gap-4">
-              {pending.map((ap) => <ApplicantCard key={ap.id} ap={ap} />)}
+              {pending.map((ap) => (
+                <ApplicantCard key={ap.id} ap={ap} onHandle={handle} />
+              ))}
             </div>
           </div>
         )}
@@ -1427,7 +1999,14 @@ function ApplicantReviewPage() {
               Rejected ({rejected.length})
             </h2>
             <div className="grid grid-cols-2 gap-4">
-              {rejected.map((ap) => <ApplicantCard key={ap.id} ap={ap} showActions={false} />)}
+              {rejected.map((ap) => (
+                <ApplicantCard
+                  key={ap.id}
+                  ap={ap}
+                  showActions={false}
+                  onHandle={handle}
+                />
+              ))}
             </div>
           </div>
         )}
@@ -1438,35 +2017,84 @@ function ApplicantReviewPage() {
 
 // ─── EMPLOYER ONBOARDING ──────────────────────────────────────────────────────
 
-function EmployerOnboarding() {
+interface EmployerOnboardingForm {
+  company: string;
+  website: string;
+  location: string;
+  about: string;
+  size: string;
+}
+
+function EmployerOnboarding(): React.ReactElement {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ company: "", website: "", location: "", about: "", size: "" });
-  const update = (k, v) => setForm({ ...form, [k]: v });
+  const [form, setForm] = useState<EmployerOnboardingForm>({
+    company: "",
+    website: "",
+    location: "",
+    about: "",
+    size: "",
+  });
+
+  const update = <K extends keyof EmployerOnboardingForm>(
+    k: K,
+    v: EmployerOnboardingForm[K]
+  ): void => setForm({ ...form, [k]: v });
 
   return (
-    <div className="min-h-screen bg-slate-50" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>
+    <div
+      className="min-h-screen bg-slate-50"
+      style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+    >
       <AppNav />
       <div className="max-w-xl mx-auto px-4 py-12">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">Set up your company</h1>
-          <p className="text-slate-500 text-sm mt-1">Tell us about your organisation to start hiring</p>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Set up your company
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            Tell us about your organisation to start hiring
+          </p>
         </div>
         <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm space-y-5">
           <div>
             <Label required>Company Name</Label>
-            <Input value={form.company} onChange={(e) => update("company", e.target.value)} placeholder="e.g. Acme Technologies" />
+            <Input
+              value={form.company}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("company", e.target.value)
+              }
+              placeholder="e.g. Acme Technologies"
+            />
           </div>
           <div>
             <Label>Website</Label>
-            <Input type="url" value={form.website} onChange={(e) => update("website", e.target.value)} placeholder="https://yourcompany.com" />
+            <Input
+              type="url"
+              value={form.website}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("website", e.target.value)
+              }
+              placeholder="https://yourcompany.com"
+            />
           </div>
           <div>
             <Label required>Headquarters Location</Label>
-            <Input value={form.location} onChange={(e) => update("location", e.target.value)} placeholder="Bengaluru, Karnataka" />
+            <Input
+              value={form.location}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                update("location", e.target.value)
+              }
+              placeholder="Bengaluru, Karnataka"
+            />
           </div>
           <div>
             <Label required>Company Size</Label>
-            <Select value={form.size} onChange={(e) => update("size", e.target.value)}>
+            <Select
+              value={form.size}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                update("size", e.target.value)
+              }
+            >
               <option value="">Select size</option>
               <option>1–10 employees</option>
               <option>11–50 employees</option>
@@ -1477,9 +2105,20 @@ function EmployerOnboarding() {
           </div>
           <div>
             <Label>About the Company</Label>
-            <Textarea rows={4} value={form.about} onChange={(e) => update("about", e.target.value)} placeholder="What does your company do? What's your mission?" />
+            <Textarea
+              rows={4}
+              value={form.about}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                update("about", e.target.value)
+              }
+              placeholder="What does your company do? What's your mission?"
+            />
           </div>
-          <Btn variant="primary" className="w-full" onClick={() => navigate("/employer/dashboard")}>
+          <Btn
+            variant="primary"
+            className="w-full"
+            onClick={() => navigate("/employer/dashboard")}
+          >
             Complete Setup →
           </Btn>
         </div>
@@ -1490,7 +2129,7 @@ function EmployerOnboarding() {
 
 // ─── APP & ROUTER ─────────────────────────────────────────────────────────────
 
-function App() {
+function App(): React.ReactElement {
   return (
     <BrowserRouter>
       <Routes>
@@ -1502,7 +2141,10 @@ function App() {
         <Route path="/track" element={<ApplicationTracker />} />
         <Route path="/employer/dashboard" element={<EmployerDashboard />} />
         <Route path="/employer/post" element={<PostJobForm />} />
-        <Route path="/employer/applicants/:jobId" element={<ApplicantReviewPage />} />
+        <Route
+          path="/employer/applicants/:jobId"
+          element={<ApplicantReviewPage />}
+        />
       </Routes>
     </BrowserRouter>
   );
